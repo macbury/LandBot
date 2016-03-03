@@ -1,0 +1,14 @@
+TODO
+=============
+
+* integrate lua scripting
+* install box2d, create planet with gravity
+  * planet loading from json
+* create lander
+  * thrusters
+  * gyrscope/accelerometer
+  * gps
+  * legs
+  * fuel information
+  * grapling hooks
+  * parachute

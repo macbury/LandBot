@@ -1,0 +1,231 @@
+
+ui.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+button_down
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  split: 13, 13, 15, 13
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+button_up
+  rotate: false
+  xy: 132, 2
+  size: 32, 32
+  split: 13, 13, 13, 15
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+console_bg
+  rotate: false
+  xy: 262, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+console_cursor
+  rotate: false
+  xy: 392, 2
+  size: 6, 16
+  orig: 6, 16
+  offset: 0, 0
+  index: -1
+icon_play
+  rotate: false
+  xy: 522, 2
+  size: 16, 18
+  orig: 16, 18
+  offset: 0, 0
+  index: -1
+icon_stop
+  rotate: false
+  xy: 652, 2
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+loader
+  rotate: false
+  xy: 782, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 0
+loader
+  rotate: false
+  xy: 2, 132
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 1
+loader
+  rotate: false
+  xy: 132, 132
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 2
+loader
+  rotate: false
+  xy: 262, 132
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 3
+loader
+  rotate: false
+  xy: 392, 132
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 4
+loader
+  rotate: false
+  xy: 522, 132
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 5
+loader
+  rotate: false
+  xy: 652, 132
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 6
+loader
+  rotate: false
+  xy: 782, 132
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 7
+loader
+  rotate: false
+  xy: 2, 262
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 8
+loader
+  rotate: false
+  xy: 132, 262
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 9
+loader
+  rotate: false
+  xy: 262, 262
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 10
+loader
+  rotate: false
+  xy: 392, 262
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 11
+loader
+  rotate: false
+  xy: 522, 262
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 12
+loader
+  rotate: false
+  xy: 652, 262
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 13
+loader
+  rotate: false
+  xy: 782, 262
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 14
+loader
+  rotate: false
+  xy: 2, 392
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 15
+loader
+  rotate: false
+  xy: 132, 392
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 16
+loader
+  rotate: false
+  xy: 262, 392
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 17
+selected_unit
+  rotate: false
+  xy: 392, 392
+  size: 32, 32
+  split: 7, 8, 7, 6
+  pad: 8, 7, 7, 6
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+text_area_current_line_background
+  rotate: false
+  xy: 522, 392
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+text_area_cursor
+  rotate: false
+  xy: 652, 392
+  size: 3, 16
+  orig: 3, 16
+  offset: 0, 0
+  index: -1
+text_area_selection
+  rotate: false
+  xy: 782, 392
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+text_field
+  rotate: false
+  xy: 2, 522
+  size: 32, 32
+  split: 8, 6, 4, 4
+  pad: 8, 7, 4, 4
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+textarea_syntax_error_line_number
+  rotate: false
+  xy: 132, 522
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+window_body
+  rotate: false
+  xy: 262, 522
+  size: 128, 128
+  split: 6, 6, 43, 5
+  pad: 6, 7, 43, 6
+  orig: 128, 128
+  offset: 0, 0
+  index: -1

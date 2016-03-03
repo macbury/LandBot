@@ -1,0 +1,79 @@
+{
+  com.badlogic.gdx.graphics.Color: {
+	green: { a: 1, b: 0, g: 1, r: 0 },
+	white: { a: 1, b: 1, g: 1, r: 1 },
+	red: { a: 1, b: 0, g: 0, r: 1 },
+	black: { a: 1, b: 0, g: 0, r: 0 },
+	syntax_string: { a: 1, b: 0, g: 1, r: 0 },
+	syntax_keyword: { a: 1, b: 0, g: 1, r: 1 },
+	syntax_normal: { a: 1, b: 1, g: 1, r: 1 },
+        syntax_number: { a: 1, b: 1, g: 0, r: 0 }
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+    default: {
+      down: button_down,
+      up: button_up
+    }
+  },
+
+  com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
+    run: {
+      down: button_down,
+      up: button_up,
+      imageUp: icon_play
+    },
+    stop: {
+      down: button_down,
+      up: button_up,
+      imageUp: icon_stop
+    }
+  },
+
+  com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+    fpsLabel: {
+      fontColor: white,
+      font: default
+    },
+    console: { font: "console", fontColor: "white" }
+  },
+
+  com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+	  default: { titleFont: default, background: window_body, titleFontColor: white },
+  },
+
+  com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+	  default: { background: text_field, font: code, fontColor: white, selection: text_area_selection, cursor: text_area_cursor },
+	console: {
+      font: "console",
+      fontColor: "white",
+      cursor: "console_cursor"
+    }
+  },
+
+  com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
+  	default: {  },
+	console: { }
+  },
+
+  de.macbury.expanse.core.ui.code_editor.widget.CodeEditorTextArea$CodeEditorTextAreaStyle: {
+    default: {
+      font: code,
+      background: text_field,
+      selection: text_area_selection,
+      cursor: text_area_cursor,
+      lineNumberBackground: text_area_current_line_background,
+      focusedLineBackground: text_area_selection,
+      syntaxErrorLineBackground: textarea_syntax_error_line_number,
+      lineNumberColor: white,
+      
+      textColor: syntax_normal,
+      syntaxKeywordColor: syntax_keyword,
+      syntaxStringColor: syntax_string,
+      syntaxCommentColor: syntax_string,
+      syntaxNumberColor: syntax_number,
+      syntaxSpecialKeywordColor: syntax_keyword,
+      syntaxErrorTextColor: white,
+      scrollPaneStyle: default
+    }
+  }
+}
