@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.FPSLogger;
 import de.macbury.landbot.core.screens.ScreenBase;
+import de.macbury.landbot.core.scripting.ScriptEnv;
 import de.macbury.landbot.core.scripting.ScriptRunner;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LoadState;
@@ -31,7 +32,7 @@ public class LuaScreen extends ScreenBase {
   @Override
   public void create() {
     this.fpsLogger    = new FPSLogger();
-    this.scriptRunner = new ScriptRunner();
+    this.scriptRunner = new ScriptRunner(Gdx.files.internal("test.lua").readString(), new ScriptEnv());
     scriptRunner.start();
   }
 

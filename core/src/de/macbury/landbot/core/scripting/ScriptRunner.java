@@ -6,42 +6,50 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.luaj.vm2.*;
 import org.luaj.vm2.compiler.LuaC;
 import org.luaj.vm2.lib.*;
-import org.luaj.vm2.lib.jse.JseMathLib;
 
 /**
- * Created on 01.03.16.
+ * This class runs Lua script in separate thread, and throttle it execution speed
  */
 public class ScriptRunner implements Disposable {
   private static final String TAG = "ScriptRunner";
   private final int INSTRUCTIONS_PER_MS = 16;
   private final float PSEUDO_CPU_TICK = 0.001f;
-  private Globals mainGlobals;
+  private ScriptEnv env;
   private ScriptEnforcer scriptEnforcer;
   private float accumulator;
   private float instructionsLeft;
+  private final String source;
   private ScriptThread thread;
+  private IScriptListener listener;
 
-  public ScriptRunner() {
+  /**
+   * Creates new script runner
+   * @param source code to run
+   * @param env the env of script
+   */
+  public ScriptRunner(String source, ScriptEnv env) {
     instructionsLeft = 0;
+    this.env = env;
+    this.source      = source;
+
+    scriptEnforcer = new ScriptEnforcer();
+    env.load(scriptEnforcer);
+    LoadState.install(env);
+    LuaC.install(env);
+  }
+
+  public IScriptListener getListener() {
+    return listener;
+  }
+
+  public void setListener(IScriptListener listener) {
+    this.listener = listener;
   }
 
   /**
-   * Creates whole env for current script
+   * Update current script execution. This is needed to script to be executed
+   * @param delta
    */
-  private void buildLuaEnv() {
-    this.mainGlobals = new Globals();
-    mainGlobals.load(new PackageLib());
-    mainGlobals.load(new TableLib());
-    mainGlobals.load(new StringLib());
-    mainGlobals.load(new JseMathLib());
-    mainGlobals.load(new IOLib());
-
-    scriptEnforcer = new ScriptEnforcer();
-    mainGlobals.load(scriptEnforcer);
-    LoadState.install(mainGlobals);
-    LuaC.install(mainGlobals);
-  }
-
   public void update(float delta) {
     if (isRunning()) {
       this.accumulator += delta;
@@ -63,8 +71,14 @@ public class ScriptRunner implements Disposable {
    */
   public void start() {
     if (!isRunning()) {
-      buildLuaEnv();
       this.thread = new ScriptThread();
+
+      if (listener != null) {
+        synchronized (listener) {
+          listener.onScriptStart(this);
+        }
+      }
+
       thread.start();
     } else {
       throw new GdxRuntimeException("Already running!");
@@ -79,6 +93,9 @@ public class ScriptRunner implements Disposable {
     return thread != null && thread.isAlive();
   }
 
+  /**
+   * Interputs current thread and force it to stop script
+   */
   public void stop() {
     if (isRunning()) {
       instructionsLeft = 0;
@@ -90,12 +107,21 @@ public class ScriptRunner implements Disposable {
   @Override
   public void dispose() {
     stop();
+
+    env.dispose();
+    env = null;
   }
 
   /**
    * Throttle script instruction rate
    */
   private class ScriptEnforcer extends DebugLib {
+    /**
+     * Throttle execution speed of script to emulate slower processor
+     * @param pc
+     * @param v
+     * @param top
+     */
     @Override
     public void onInstruction(int pc, Varargs v, int top) {
       synchronized (this) {
@@ -123,7 +149,7 @@ public class ScriptRunner implements Disposable {
 
     @Override
     public void run() {
-      LuaValue chunk = mainGlobals.load(Gdx.files.internal("test.lua").readString());
+      LuaValue chunk = env.load(source);
       try {
         chunk.call();
       } catch (LuaError e) {
@@ -131,8 +157,19 @@ public class ScriptRunner implements Disposable {
           // Ignore this error
           Gdx.app.debug(TAG, "Somebody wants this script to stop. Forcing it");
         } else {
-          // Real error here
-          Gdx.app.log(TAG, e.getMessage());
+          if (listener != null) {
+            synchronized (listener) {
+              listener.onScriptError(ScriptRunner.this, e);
+            }
+          } else {
+            Gdx.app.log(TAG, e.getMessage());
+          }
+        }
+      } finally {
+        if (listener != null) {
+          synchronized (listener) {
+            listener.onScriptStop(ScriptRunner.this);
+          }
         }
       }
 
@@ -146,20 +183,4 @@ public class ScriptRunner implements Disposable {
 
   }
 
-  public class IOLib extends TwoArgFunction {
-
-    @Override
-    public LuaValue call(LuaValue modname, LuaValue env) {
-      env.set("print", new PrintFunction());
-      return null;
-    }
-
-    public class PrintFunction extends OneArgFunction {
-      @Override
-      public LuaValue call(LuaValue arg) {
-        Gdx.app.log(TAG, arg.toString());
-        return null;
-      }
-    }
-  }
 }

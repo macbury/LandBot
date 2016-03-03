@@ -20,20 +20,7 @@ public class Messages extends MessageDispatcher {
    */
   public void dispatchMessage(Telegraph sender, TelegramEvents event, Object payload) {
     synchronized (this) {
-      dispatchMessage(sender, event.ordinal(), payload);
-    }
-  }
-
-  /**
-   * Dispatch message from entity, Sender is {@link PositionComponent}
-   * @param sender
-   * @param event
-   * @param payload
-   */
-  public void dispatchMessage(Entity sender, TelegramEvents event, Object payload) {
-    synchronized (this) {
-      PositionComponent positionComponent = Components.Position.get(sender);
-      dispatchMessage(positionComponent, event.ordinal(), payload);
+      dispatchMessage(0.001f, sender, event.ordinal(), payload);
     }
   }
 

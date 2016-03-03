@@ -13,10 +13,13 @@ import de.macbury.landbot.core.screens.ScreenBase;
  */
 public class PsychScreen extends ScreenBase {
   private World world;
-  private Box2DDebugRenderer debugRenderer;
-  private OrthographicCamera camera;
+  private Box2DDebugRenderer b2dr;
+  private OrthographicCamera gameCamera;
   private final static int VIEWPORT_WIDTH = 6;
   private final static int VIEWPORT_HEIGHT = 5;
+  private final static float PPM           = 20;
+  private OrthographicCamera b2dCamera;
+
   @Override
   public void preload() {
 
@@ -24,45 +27,51 @@ public class PsychScreen extends ScreenBase {
 
   @Override
   public void create() {
-    this.camera = new OrthographicCamera(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
-    camera.position.set(VIEWPORT_WIDTH/2, VIEWPORT_HEIGHT/2, 0);
-    this.world = new World(new Vector2(0, 0), true);
-    this.debugRenderer = new Box2DDebugRenderer();
-    // Create our body definition
-    BodyDef groundBodyDef =new BodyDef();
-    // Set its world position
-    groundBodyDef.position.set(new Vector2(0, 10));
+    this.gameCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    this.b2dCamera  = new OrthographicCamera(Gdx.graphics.getWidth()/PPM, Gdx.graphics.getHeight()/PPM);
+    this.world = new World(new Vector2(0, -9.8f), true);
+    this.b2dr = new Box2DDebugRenderer();
 
-// Create a body from the defintion and add it to the world
-    Body groundBody = world.createBody(groundBodyDef);
 
-// Create a polygon shape
-    PolygonShape groundBox = new PolygonShape();
-// Set the polygon shape as a box which is twice the size of our view port and 20 high
-// (setAsBox takes half-width and half-height as arguments)
-    groundBox.setAsBox(2, 2);
-// Create a fixture from our polygon shape and add it to our ground body
-    groundBody.createFixture(groundBox, 0.0f);
-// Clean up after ourselves
-    groundBox.dispose();
+    // create platform
+    BodyDef bdef = new BodyDef();
+    bdef.position.set(0 / PPM, 0 / PPM);
+    bdef.type = BodyDef.BodyType.StaticBody;
+    Body body = world.createBody(bdef);
+
+    PolygonShape shape = new PolygonShape();
+    shape.setAsBox(320 / PPM, 10 / PPM);
+    FixtureDef fdef = new FixtureDef();
+    fdef.shape = shape;
+    body.createFixture(fdef);
+
+    // create falling box
+    bdef.position.set(160 / PPM, 200 / PPM);
+    bdef.type = BodyDef.BodyType.DynamicBody;
+    body = world.createBody(bdef);
+
+    shape.setAsBox(10 / PPM, 10 / PPM);
+    fdef.shape = shape;
+    body.createFixture(fdef);
   }
 
   @Override
   public void render(float delta) {
-    camera.update();
+    gameCamera.update();
+    b2dCamera.update();
     world.step(1/60f, 6, 2);
 
     fb.begin(Fbo.FinalResult); {
       Gdx.gl.glClearColor(0,0,0,1);
       Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-      debugRenderer.render(world, camera.combined);
+      b2dr.render(world, b2dCamera.combined);
     } fb.end();
+
   }
 
   @Override
   public void resize(int width, int height) {
-    camera.viewportHeight = (VIEWPORT_WIDTH / width) * height;
-    camera.update();
+
   }
 
   @Override

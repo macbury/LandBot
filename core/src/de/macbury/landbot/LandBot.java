@@ -62,7 +62,7 @@ public class LandBot extends ApplicationAdapter {
     this.hud        = new Hud(input, assets, fb, messages);
 
 
-    screens.set(new LuaScreen());
+    screens.set(new PsychScreen());
 
     Gdx.input.setInputProcessor(input);
   }
