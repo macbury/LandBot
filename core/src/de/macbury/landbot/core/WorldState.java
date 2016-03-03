@@ -21,19 +21,28 @@ import de.macbury.landbot.core.graphics.camera.RTSCameraController;
  */
 public class WorldState implements Disposable {
   private static final String TAG = "WorldState";
+  /**
+   * Pixels per meter
+   */
+  public final static float PPM           = 5;
   public EntityManager entities;
   public OrthographicCamera camera;
   public World world;
+  public OrthographicCamera b2dCamera;
 
   public WorldState(LandBot game) {
     this.camera               = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    this.b2dCamera            = new OrthographicCamera(Gdx.graphics.getWidth()/ PPM, Gdx.graphics.getHeight()/PPM);
     this.world                = new World(new Vector2(0, -9.8f), true);
     this.entities             = new EntityManager(this, game);
     Gdx.app.log(TAG, "Initialized");
+
+    camera.zoom = b2dCamera.zoom = 6.0f;
   }
 
   public void render(float delta) {
     camera.update();
+    b2dCamera.update();
     entities.update(delta);
   }
 

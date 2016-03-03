@@ -20,19 +20,16 @@ import de.macbury.landbot.core.graphics.framebuffer.Fbo;
  */
 public class PhysicsSystem extends IteratingSystem implements Disposable, EntityListener {
   private final Box2DDebugRenderer b2dr;
-  private final OrthographicCamera b2dCamera;
+  private OrthographicCamera b2dCamera;
   private LandBot game;
   private World world;
-  /**
-   * Pixels per meter
-   */
-  public final static float PPM           = 5;
+
   public PhysicsSystem(LandBot game, WorldState worldState) {
     super(Family.all(PositionComponent.class, BodyComponent.class).get());
-    this.world = worldState.world;
+    this.world      = worldState.world;
     this.b2dr       = new Box2DDebugRenderer();
-    this.b2dCamera  = new OrthographicCamera(Gdx.graphics.getWidth()/ PhysicsSystem.PPM, Gdx.graphics.getHeight()/PhysicsSystem.PPM);
     this.game       = game;
+    this.b2dCamera  = worldState.b2dCamera;
   }
 
   @Override
@@ -55,7 +52,7 @@ public class PhysicsSystem extends IteratingSystem implements Disposable, Entity
   protected void processEntity(Entity entity, float deltaTime) {
     BodyComponent bodyComponent         = Components.Body.get(entity);
     PositionComponent positionComponent = Components.Position.get(entity);
-    positionComponent.set(bodyComponent.body.getWorldCenter()).scl(PPM);
+    positionComponent.set(bodyComponent.body.getWorldCenter()).scl(WorldState.PPM);
     positionComponent.rotation          = bodyComponent.body.getAngle();
   }
 
@@ -65,6 +62,7 @@ public class PhysicsSystem extends IteratingSystem implements Disposable, Entity
     b2dr.dispose();
     world = null;
     game = null;
+    b2dCamera = null;
   }
 
   /**
@@ -77,7 +75,7 @@ public class PhysicsSystem extends IteratingSystem implements Disposable, Entity
       BodyComponent bodyComponent         = Components.Body.get(entity);
       PositionComponent positionComponent = Components.Position.get(entity);
 
-      bodyComponent.bodyDef.position.set(positionComponent.x / PPM, positionComponent.y / PPM);
+      bodyComponent.bodyDef.position.set(positionComponent.x / WorldState.PPM, positionComponent.y / WorldState.PPM);
       bodyComponent.body = world.createBody(bodyComponent.bodyDef);
       bodyComponent.body.createFixture(bodyComponent.fixtureDef);
     }
