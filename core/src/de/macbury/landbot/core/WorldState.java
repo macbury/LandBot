@@ -1,6 +1,7 @@
 package de.macbury.landbot.core;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
@@ -21,17 +22,18 @@ import de.macbury.landbot.core.graphics.camera.RTSCameraController;
 public class WorldState implements Disposable {
   private static final String TAG = "WorldState";
   public EntityManager entities;
-  public GameCamera camera;
+  public OrthographicCamera camera;
   public World world;
 
   public WorldState(LandBot game) {
-    this.camera               = new GameCamera();
+    this.camera               = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     this.world                = new World(new Vector2(0, -9.8f), true);
     this.entities             = new EntityManager(this, game);
     Gdx.app.log(TAG, "Initialized");
   }
 
   public void render(float delta) {
+    camera.update();
     entities.update(delta);
   }
 
@@ -43,7 +45,7 @@ public class WorldState implements Disposable {
   }
 
   public void resize(int width, int height) {
-
+    //this.camera.setToOrtho(false, width, height);
   }
 
   public static class Blueprint {

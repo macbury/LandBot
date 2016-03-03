@@ -4,31 +4,46 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Disposable;
+import de.macbury.landbot.LandBot;
 import de.macbury.landbot.core.WorldState;
 import de.macbury.landbot.core.entities.Components;
 import de.macbury.landbot.core.entities.components.BodyComponent;
 import de.macbury.landbot.core.entities.components.PositionComponent;
+import de.macbury.landbot.core.graphics.framebuffer.Fbo;
 
 /**
  * This system handles adding entities with box2d components to {@link World}, simulate planet gravities and updateing {@link World}
  */
 public class PhysicsSystem extends IteratingSystem implements Disposable, EntityListener {
+  private final Box2DDebugRenderer b2dr;
+  private final OrthographicCamera b2dCamera;
+  private LandBot game;
   private World world;
   /**
    * Pixels per meter
    */
-  public final static float PPM           = 20;
-  public PhysicsSystem(WorldState worldState) {
+  public final static float PPM           = 5;
+  public PhysicsSystem(LandBot game, WorldState worldState) {
     super(Family.all(PositionComponent.class, BodyComponent.class).get());
     this.world = worldState.world;
+    this.b2dr       = new Box2DDebugRenderer();
+    this.b2dCamera  = new OrthographicCamera(Gdx.graphics.getWidth()/ PhysicsSystem.PPM, Gdx.graphics.getHeight()/PhysicsSystem.PPM);
+    this.game       = game;
   }
 
   @Override
   public void update(float deltaTime) {
-    super.update(deltaTime);
     world.step(1/60f, 6, 2);
+    super.update(deltaTime);
+
+    b2dCamera.update();
+    game.fb.begin(Fbo.FinalResult); {
+      b2dr.render(world, b2dCamera.combined);
+    } game.fb.end();
   }
 
   /**
@@ -40,14 +55,16 @@ public class PhysicsSystem extends IteratingSystem implements Disposable, Entity
   protected void processEntity(Entity entity, float deltaTime) {
     BodyComponent bodyComponent         = Components.Body.get(entity);
     PositionComponent positionComponent = Components.Position.get(entity);
-    positionComponent.set(bodyComponent.body.getPosition());
+    positionComponent.set(bodyComponent.body.getWorldCenter()).scl(PPM);
     positionComponent.rotation          = bodyComponent.body.getAngle();
   }
 
 
   @Override
   public void dispose() {
+    b2dr.dispose();
     world = null;
+    game = null;
   }
 
   /**
@@ -60,16 +77,9 @@ public class PhysicsSystem extends IteratingSystem implements Disposable, Entity
       BodyComponent bodyComponent         = Components.Body.get(entity);
       PositionComponent positionComponent = Components.Position.get(entity);
 
-      BodyDef bdef = new BodyDef();
-      bdef.position.set(positionComponent.x / PPM, positionComponent.y / PPM);
-      bdef.type = BodyDef.BodyType.DynamicBody;
-      bodyComponent.body      = world.createBody(bdef);
-      PolygonShape shape = new PolygonShape();
-      shape.setAsBox(10 / PPM, 10 / PPM);
-      FixtureDef fdef = new FixtureDef();
-      fdef.shape = shape;
-      Fixture Fix = bodyComponent.body.createFixture(fdef);
-      Fix.setRestitution(0.4f);
+      bodyComponent.bodyDef.position.set(positionComponent.x / PPM, positionComponent.y / PPM);
+      bodyComponent.body = world.createBody(bodyComponent.bodyDef);
+      bodyComponent.body.createFixture(bodyComponent.fixtureDef);
     }
   }
 

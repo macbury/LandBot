@@ -33,7 +33,6 @@ public class PsychScreen extends ScreenBase {
     this.world = new World(new Vector2(0, -9.8f), true);
     this.b2dr = new Box2DDebugRenderer();
     this.b2dCamera  = new OrthographicCamera(Gdx.graphics.getWidth()/PPM, Gdx.graphics.getHeight()/PPM);
-    b2dCamera.zoom = 2f;
 
     // create platform
     //BodyDef bdef = new BodyDef();
@@ -47,7 +46,7 @@ public class PsychScreen extends ScreenBase {
   //  fdef.shape = shape;
 
   //  body.createFixture(fdef);
-
+/*
     // create falling box
     BodyDef bdef = new BodyDef();
     bdef.position.set(160 / PPM, 200 / PPM);
@@ -59,7 +58,7 @@ public class PsychScreen extends ScreenBase {
     fdef.shape = shape;
     Fixture Fix = body.createFixture(fdef);
     Fix.setRestitution(0.4f);
-    this.body = body;
+    this.body = body;*/
 
   }
 

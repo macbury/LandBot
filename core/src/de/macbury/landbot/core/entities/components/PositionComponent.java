@@ -43,7 +43,6 @@ public class PositionComponent extends Vector2 implements Component, Pool.Poolab
     public float y;
     public float z;
     public float rotation;
-    public Vector3 dimension;
 
     @Override
     public void prepareDependencies(Array<AssetDescriptor> dependencies) {
@@ -59,7 +58,6 @@ public class PositionComponent extends Vector2 implements Component, Pool.Poolab
     public void applyTo(PositionComponent component, Entity owner, Messages messages) {
       component.set(x, y);
       component.rotation = rotation;
-      component.dimension.set(dimension);
     }
 
     @Override
@@ -67,7 +65,6 @@ public class PositionComponent extends Vector2 implements Component, Pool.Poolab
       x = source.getFloat("x", 0);
       y = source.getFloat("y", 0);
       rotation = source.getFloat("rotation", 0);
-      dimension = json.readValue(Vector3.class, source.get("dimension"));
     }
 
     @Override
@@ -76,7 +73,6 @@ public class PositionComponent extends Vector2 implements Component, Pool.Poolab
       target.writeValue("y", source.y);
       target.writeValue("z", source.x);
       target.writeValue("rotation", source.rotation);
-      target.writeValue(source.dimension);
     }
 
     @Override

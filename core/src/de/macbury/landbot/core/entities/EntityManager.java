@@ -16,8 +16,8 @@ public class EntityManager extends PooledEngine implements Disposable {
   public EntityManager(WorldState worldState, LandBot game) {
     super();
 
-    this.spriteRenderingSystem = new SpriteRenderingSystem(worldState.camera);
-    this.psychicsSystem        = new PhysicsSystem(worldState);
+    this.spriteRenderingSystem = new SpriteRenderingSystem(game, worldState);
+    this.psychicsSystem        = new PhysicsSystem(game, worldState);
 
     addEntityListener(psychicsSystem);
     addSystem(spriteRenderingSystem);

@@ -14,5 +14,6 @@ public class PackTextures {
     settings.paddingY = 2;
     TexturePacker.process(settings, "./raw/gui", "./android/assets/ui", "ui.atlas");
     TexturePacker.process(settings, "./raw/tiles", "./android/assets/textures/", "tiles.atlas");
+    TexturePacker.process(settings, "./raw/sprites", "./android/assets/textures/", "sprites.atlas");
   }
 }
