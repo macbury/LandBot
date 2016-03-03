@@ -15,6 +15,7 @@ import de.macbury.landbot.core.input.InputManager;
 import de.macbury.landbot.core.screens.ScreenManager;
 import de.macbury.landbot.core.ui.Hud;
 import de.macbury.landbot.game.LuaScreen;
+import de.macbury.landbot.game.PsychEntityScreen;
 import de.macbury.landbot.game.PsychScreen;
 
 public class LandBot extends ApplicationAdapter {
@@ -62,7 +63,7 @@ public class LandBot extends ApplicationAdapter {
     this.hud        = new Hud(input, assets, fb, messages);
 
 
-    screens.set(new PsychScreen());
+    screens.set(new PsychEntityScreen());
 
     Gdx.input.setInputProcessor(input);
   }

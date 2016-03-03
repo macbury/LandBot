@@ -48,8 +48,8 @@ public class SpriteRenderingSystem extends IteratingSystem implements Disposable
     PositionComponent positionComponent = Components.Position.get(entity);
     SpriteComponent  spriteComponent    = Components.Sprite.get(entity);
 
-    spriteComponent.setCenter(positionComponent.x, positionComponent.z);
-    spriteComponent.setRotation(-positionComponent.rotationDeg);//TODO: Rotate in clockwise direction the sprite :/
+    spriteComponent.setCenter(positionComponent.x, positionComponent.y);
+    spriteComponent.setRotation(-positionComponent.rotation);//TODO: Rotate in clockwise direction the sprite :/
     spriteComponent.draw(spriteBatch);
   }
 }

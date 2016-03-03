@@ -9,14 +9,14 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import de.macbury.landbot.LandBot;
-import de.macbury.landbot.core.World;
+import de.macbury.landbot.core.WorldState;
 
 /**
  * Loads world
  */
-public class WorldLoader extends AsynchronousAssetLoader<World, WorldLoader.WorldParameter> {
+public class WorldLoader extends AsynchronousAssetLoader<WorldState, WorldLoader.WorldParameter> {
   private final LandBot game;
-  private World.Blueprint blueprint;
+  private WorldState.Blueprint blueprint;
 
   public WorldLoader(FileHandleResolver resolver, LandBot game) {
     super(resolver);
@@ -29,19 +29,19 @@ public class WorldLoader extends AsynchronousAssetLoader<World, WorldLoader.Worl
   }
 
   @Override
-  public World loadSync(AssetManager manager, String fileName, FileHandle file, WorldParameter parameter) {
+  public WorldState loadSync(AssetManager manager, String fileName, FileHandle file, WorldParameter parameter) {
     System.gc();
-    return new World(game);
+    return new WorldState(game);
   }
 
   @Override
   public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, WorldParameter parameter) {
     Json json                       = new Json();
-    this.blueprint                  = json.fromJson(World.Blueprint.class, file);
+    this.blueprint                  = json.fromJson(WorldState.Blueprint.class, file);
     return null;
   }
 
-  static public class WorldParameter extends AssetLoaderParameters<World> {
+  static public class WorldParameter extends AssetLoaderParameters<WorldState> {
 
   }
 
