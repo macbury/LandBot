@@ -1,5 +1,6 @@
 package de.macbury.landbot.core.scripting;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -21,6 +22,9 @@ public class ScriptRunner implements Disposable {
   private final String source;
   private ScriptThread thread;
   private IScriptListener listener;
+  private Entity owner;
+  private boolean pause;
+  private Object yieldResult;
 
   /**
    * Creates new script runner
@@ -36,6 +40,8 @@ public class ScriptRunner implements Disposable {
     env.load(scriptEnforcer);
     LoadState.install(env);
     LuaC.install(env);
+
+    env.setup(this);
   }
 
   public IScriptListener getListener() {
@@ -47,11 +53,48 @@ public class ScriptRunner implements Disposable {
   }
 
   /**
+   * Wakes up sleeping script thread with result
+   * @param result
+   */
+  public void resume(Object result) {
+    if (yieldResult != null) {
+      throw new GdxRuntimeException("There is already pending yieldResult:" + yieldResult);
+    }
+    yieldResult = result;
+    this.pause = false;
+    synchronized (thread){
+      this.thread.notify();
+    }
+  }
+
+  /**
+   * Pause running script. Mainly should be used by lua scripts to stop script execution
+   * @return object passed through {@link ScriptRunner#resume(Object)}
+   */
+  public Object yield() {
+    synchronized (thread) {
+      this.pause = true;
+      try {
+        thread.wait();
+        Object res = yieldResult;
+        yieldResult = null;
+        return res;
+      } catch (InterruptedException e) {
+        throw new ScriptInterruptException();
+      }
+    }
+  }
+
+  public boolean isPaused() {
+    return pause;
+  }
+
+  /**
    * Update current script execution. This is needed to script to be executed
    * @param delta
    */
   public void update(float delta) {
-    if (isRunning()) {
+    if (!isPaused() && isRunning()) {
       this.accumulator += delta;
       while(accumulator > PSEUDO_CPU_TICK) {
         instructionsLeft +=  INSTRUCTIONS_PER_MS;
@@ -59,8 +102,8 @@ public class ScriptRunner implements Disposable {
       }
 
       if (instructionsLeft > 0) {
-        synchronized (scriptEnforcer) {
-          scriptEnforcer.notify();
+        synchronized (thread) {
+          thread.notify();
         }
       }
     }
@@ -101,6 +144,8 @@ public class ScriptRunner implements Disposable {
       instructionsLeft = 0;
       thread.interrupt();
       thread = null;
+      pause = false;
+      yieldResult = null;
     }
   }
 
@@ -108,8 +153,24 @@ public class ScriptRunner implements Disposable {
   public void dispose() {
     stop();
 
-    env.dispose();
+    if (env != null)
+      env.dispose();
     env = null;
+
+    setListener(null);
+    owner = null;
+  }
+
+  /**
+   * Who owns entity
+   * @param owner
+   */
+  public void setOwner(Entity owner) {
+    this.owner = owner;
+  }
+
+  public Entity getOwner() {
+    return owner;
   }
 
   /**
@@ -127,7 +188,7 @@ public class ScriptRunner implements Disposable {
       synchronized (this) {
         while(instructionsLeft == 0) {
           try {
-            wait();
+            thread.wait();
           } catch (InterruptedException e) {
             /**
              * This will be catched in {@link ScriptThread#run()}
@@ -135,7 +196,6 @@ public class ScriptRunner implements Disposable {
             throw new ScriptInterruptException();
           }
         }
-
         super.onInstruction(pc, v, top);
         instructionsLeft--;
       }
@@ -149,8 +209,8 @@ public class ScriptRunner implements Disposable {
 
     @Override
     public void run() {
-      LuaValue chunk = env.load(source);
       try {
+        LuaValue chunk = env.load(source);
         chunk.call();
       } catch (LuaError e) {
         if (ScriptInterruptException.class.isInstance(e.getCause())) {
@@ -171,8 +231,9 @@ public class ScriptRunner implements Disposable {
             listener.onScriptStop(ScriptRunner.this);
           }
         }
-      }
 
+        dispose();
+      }
     }
   }
 

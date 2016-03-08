@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Disposable;
 import de.macbury.landbot.core.entities.Messages;
-import de.macbury.landbot.core.ui.code_editor.js.JavaScriptScanner;
+import de.macbury.landbot.core.ui.code_editor.js.LuaScanner;
 import de.macbury.landbot.core.ui.code_editor.widget.CodeEditorTextArea;
 
 /**
@@ -13,7 +13,7 @@ import de.macbury.landbot.core.ui.code_editor.widget.CodeEditorTextArea;
 public class CodeEditorView extends ScrollPane implements Disposable {
   private CodeEditorTextArea textArea;
 
-  public CodeEditorView(CodeEditorTextArea.CodeEditorTextAreaStyle style, JavaScriptScanner js, Messages messages) {
+  public CodeEditorView(CodeEditorTextArea.CodeEditorTextAreaStyle style, LuaScanner js, Messages messages) {
     super(null, style.scrollPaneStyle);
 
     this.setFadeScrollBars(false);
@@ -23,7 +23,7 @@ public class CodeEditorView extends ScrollPane implements Disposable {
     this.setWidget(textArea);
   }
 
-  public CodeEditorView(Skin skin, JavaScriptScanner js, Messages messages) {
+  public CodeEditorView(Skin skin, LuaScanner js, Messages messages) {
     this(skin.get(CodeEditorTextArea.CodeEditorTextAreaStyle.class), js, messages);
   }
 

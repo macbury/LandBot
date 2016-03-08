@@ -80,8 +80,8 @@ public class GameConsoleView extends Table implements Disposable, Telegraph {
 
     //this.add(input).expandX().fillX().pad(4);
 
-    messages.addListener(this, TelegramEvents.InstructionMessage);
-    messages.addListener(this, TelegramEvents.ScriptException);
+   // messages.addListener(this, TelegramEvents.InstructionMessage);
+    //messages.addListener(this, TelegramEvents.ScriptException);
   }
 
   private void moveCommandDown() {
@@ -140,8 +140,8 @@ public class GameConsoleView extends Table implements Disposable, Telegraph {
 
   @Override
   public void dispose() {
-    messages.removeListener(this, TelegramEvents.ScriptException);
-    messages.removeListener(this, TelegramEvents.InstructionMessage);
+    //messages.removeListener(this, TelegramEvents.ScriptException);
+    //messages.removeListener(this, TelegramEvents.InstructionMessage);
     labelPool.freeAll(labels);
     labels.clear();
     messages = null;
@@ -173,7 +173,7 @@ public class GameConsoleView extends Table implements Disposable, Telegraph {
   @Override
   public boolean handleMessage(Telegram msg) {
     switch (TelegramEvents.from(msg)) {
-      case InstructionMessage:
+     /* case InstructionMessage:
         trimLogs();
         pushLabel().set(msg, messages);
         return true;
@@ -181,7 +181,7 @@ public class GameConsoleView extends Table implements Disposable, Telegraph {
       case ScriptException:
         trimLogs();
         pushLabel().set(msg, messages);
-        return true;
+        return true;*/
     }
 
     return false;

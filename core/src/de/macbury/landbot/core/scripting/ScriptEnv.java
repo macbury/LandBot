@@ -10,7 +10,7 @@ import org.luaj.vm2.lib.jse.JseMathLib;
 /**
  * This are basic env for lander
  */
-public class ScriptEnv extends Globals implements Disposable {
+public abstract class ScriptEnv extends Globals implements Disposable {
   public ScriptEnv() {
     super();
 
@@ -18,31 +18,7 @@ public class ScriptEnv extends Globals implements Disposable {
     load(new TableLib());
     load(new StringLib());
     load(new JseMathLib());
-    load(new IOLib());
   }
 
-  @Override
-  public void dispose() {
-
-  }
-
-  //TODO: This is placeholder remove this
-  public class IOLib extends TwoArgFunction {
-
-    @Override
-    public LuaValue call(LuaValue modname, LuaValue env) {
-      env.set("print", new PrintFunction());
-      return null;
-    }
-
-    public class PrintFunction extends OneArgFunction {
-      private static final String TAG = "PrintFunction";
-
-      @Override
-      public LuaValue call(LuaValue arg) {
-        Gdx.app.log(TAG, arg.toString());
-        return null;
-      }
-    }
-  }
+  public abstract void setup(ScriptRunner runner);
 }

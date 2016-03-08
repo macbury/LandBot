@@ -16,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.*;
 import de.macbury.landbot.core.entities.Messages;
 import de.macbury.landbot.core.ui.code_editor.CodeEditorView;
-import de.macbury.landbot.core.ui.code_editor.js.JavaScriptScanner;
+import de.macbury.landbot.core.ui.code_editor.js.LuaScanner;
 
 import java.util.HashMap;
 
@@ -37,11 +37,11 @@ public class CodeEditorTextArea extends WidgetGroup implements Disposable {
   private static final int DELETE_RIGHT = 1;
   private static final int DELETE_LEFT = -1;
   private static final float EXCEPTION_ICON_LEFT_MARGIN = 10;
-  private final JavaScriptScanner js;
+  private final LuaScanner js;
   private Messages messages;
   private CodeEditorView scroll;
   private Clipboard clipboard;
-  private HashMap<JavaScriptScanner.Kind, Color> styles;
+  private HashMap<LuaScanner.Kind, Color> styles;
   private Array<Line> lines;
   private CodeEditorTextAreaStyle style;
   private GlyphLayout glyphLayout = new GlyphLayout();
@@ -63,23 +63,23 @@ public class CodeEditorTextArea extends WidgetGroup implements Disposable {
   private Vector2 tempVector = new Vector2();
   private String lineErrorMessage;
 
-  public CodeEditorTextArea(CodeEditorTextAreaStyle style, CodeEditorView scrollContainer, JavaScriptScanner js, Messages messages) {
+  public CodeEditorTextArea(CodeEditorTextAreaStyle style, CodeEditorView scrollContainer, LuaScanner js, Messages messages) {
     this.scroll = scrollContainer;
     this.style = style;
     this.messages = messages;
     lines      = new Array<Line>();
     history    = new Array<String>();
-    styles     = new HashMap<JavaScriptScanner.Kind, Color>();
+    styles     = new HashMap<LuaScanner.Kind, Color>();
     clipboard  = Gdx.app.getClipboard();
     caret      = new Caret(this.lines);
     this.js    = js;
 
-    styles.put(JavaScriptScanner.Kind.KEYWORD, style.syntaxKeywordColor);
-    styles.put(JavaScriptScanner.Kind.NORMAL, style.textColor);
-    styles.put(JavaScriptScanner.Kind.STRING, style.syntaxStringColor);
-    styles.put(JavaScriptScanner.Kind.COMMENT, style.syntaxCommentColor);
-    styles.put(JavaScriptScanner.Kind.NUMBER, style.syntaxNumberColor);
-    styles.put(JavaScriptScanner.Kind.SPECIAL_KEYWORD, style.syntaxSpecialKeywordColor);
+    styles.put(LuaScanner.Kind.KEYWORD, style.syntaxKeywordColor);
+    styles.put(LuaScanner.Kind.NORMAL, style.textColor);
+    styles.put(LuaScanner.Kind.STRING, style.syntaxStringColor);
+    styles.put(LuaScanner.Kind.COMMENT, style.syntaxCommentColor);
+    styles.put(LuaScanner.Kind.NUMBER, style.syntaxNumberColor);
+    styles.put(LuaScanner.Kind.SPECIAL_KEYWORD, style.syntaxSpecialKeywordColor);
 
     initializeKeyboard();
     initializeCursorArea();
@@ -531,12 +531,12 @@ public class CodeEditorTextArea extends WidgetGroup implements Disposable {
   public void parse(String text) {
     this.lines.clear();
     js.set(text);
-    JavaScriptScanner.Kind kind;
+    LuaScanner.Kind kind;
 
     Line line = new Line();
     this.lines.add(line);
-    while((kind=js.scan()) != JavaScriptScanner.Kind.EOF) {
-      if(kind == JavaScriptScanner.Kind.NEWLINE) {
+    while((kind=js.scan()) != LuaScanner.Kind.EOF) {
+      if(kind == LuaScanner.Kind.NEWLINE) {
         line = new Line();
         this.lines.add(line);
       } else {

@@ -30,6 +30,9 @@ public class PhysicsSystem extends IteratingSystem implements Disposable, Entity
     this.b2dr       = new Box2DDebugRenderer();
     this.game       = game;
     this.b2dCamera  = worldState.b2dCamera;
+
+    b2dr.setDrawVelocities(true);
+    b2dr.setDrawContacts(true);
   }
 
   @Override

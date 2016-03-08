@@ -5,7 +5,7 @@ package de.macbury.landbot.core.ui.code_editor.js;
  *
  * @author Matthias Mann
  */
-public class JavaScriptScanner {
+public class LuaScanner {
 
   private CharacterIterator iterator;
 
@@ -29,7 +29,7 @@ public class JavaScriptScanner {
   }
 
   private static final KeywordList KEYWORD_LIST = new KeywordList(
-          "function", "true", "false", "var", "for", "while", "if", "else", "null", "this", "new", "switch", "case", "break", "try", "catch", "do", "instanceof", "return", "throw", "typeof", "with", "prototype");
+          "function", "end", "true", "false", "var", "for", "while", "if", "else", "null", "this", "new", "switch", "case", "break", "try", "catch", "do", "instanceof", "return", "throw", "typeof", "with", "prototype");
   private static final KeywordList SPECIAL_KEYWORD_LIST = new KeywordList("robot", "led", "sonar", "console");
 
   private boolean inMultiLineComment;

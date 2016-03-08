@@ -1,12 +1,12 @@
 package de.macbury.landbot.core.ui.code_editor.widget;
 
-import de.macbury.landbot.core.ui.code_editor.js.JavaScriptScanner;
+import de.macbury.landbot.core.ui.code_editor.js.LuaScanner;
 
 public class Element {
-  public JavaScriptScanner.Kind kind;
+  public LuaScanner.Kind kind;
   public String text;
 
-  public Element(JavaScriptScanner.Kind k, String t) {
+  public Element(LuaScanner.Kind k, String t) {
     text = t;
     kind = k;
   }

@@ -9,10 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Disposable;
 import de.macbury.landbot.core.TelegramEvents;
-import de.macbury.landbot.core.entities.Components;
 import de.macbury.landbot.core.entities.Messages;
 import de.macbury.landbot.core.ui.code_editor.CodeEditorView;
-import de.macbury.landbot.core.ui.code_editor.js.JavaScriptScanner;
+import de.macbury.landbot.core.ui.code_editor.js.LuaScanner;
 import de.macbury.landbot.core.ui.ingame.GameplayScreenGroup;
 
 /**
@@ -29,21 +28,23 @@ public class ProgramingController implements Disposable, Telegraph {
   private GameplayScreenGroup group;
   private Messages messages;
   private Entity currentEntity;
+  private boolean scriptRunning;
 
   public ProgramingController(Messages messages, GameplayScreenGroup gameplayScreenGroup, Skin skin) {
     this.group    = gameplayScreenGroup;
     this.messages = messages;
-    messages.addListener(this, TelegramEvents.SelectedEntity);
-    messages.addListener(this, TelegramEvents.DeselectedEntity);
-    messages.addListener(this, TelegramEvents.ScriptStart);
-    messages.addListener(this, TelegramEvents.ScriptStop);
+    messages.addListeners(this, TelegramEvents.OnScriptStart, TelegramEvents.OnScriptStop);
+    //messages.addListener(this, TelegramEvents.SelectedEntity);
+    //messages.addListener(this, TelegramEvents.DeselectedEntity);
+    //messages.addListener(this, TelegramEvents.ScriptStart);
+    //messages.addListener(this, TelegramEvents.ScriptStop);
 
     this.codeEditorWindow = new Dialog("Code editor", skin);
     codeEditorWindow.setSize(800, 600);
     codeEditorWindow.setResizable(true);
     codeEditorWindow.setVisible(false);
     codeEditorWindow.setModal(false);
-    this.codeTextField     = new CodeEditorView(skin, new JavaScriptScanner(), messages);
+    this.codeTextField     = new CodeEditorView(skin, new LuaScanner(), messages);
 
     runButtonStyle         = skin.get("run", ImageButton.ImageButtonStyle.class);
     stopButtonStyle        = skin.get("stop", ImageButton.ImageButtonStyle.class);
@@ -68,39 +69,32 @@ public class ProgramingController implements Disposable, Telegraph {
     }
 
     gameplayScreenGroup.addActor(codeEditorWindow);
+
   }
 
   private void runStopButtonClick() {
-    if (currentEntity != null) {
-      //Gdx.app.log(TAG, "runStopButtonClick: " + Components.RobotCPU.get(currentEntity).getState());
-      /*if (Components.RobotCPU.get(currentEntity).isRunning()) {
-        stopCode();
-      } else {
-        runCode();
-      }*/
-    }
+    runCode();
   }
 
   private void stopCode() {
     if (currentEntity != null) {
-      //messages.dispatchStopRobot(currentEntity);
+
     }
   }
 
   private void runCode() {
-    if (currentEntity != null) {
-      //Components.RobotCPU.get(currentEntity).setSource(codeTextField.getText());
-     // messages.dispatchReprogramRobot(currentEntity);
+    if (scriptRunning) {
+      messages.dispatchMessage(TelegramEvents.StopLandingScript);
+    } else {
+      messages.dispatchMessage(TelegramEvents.RunLandingScript, codeTextField.getText());
     }
+
   }
 
   @Override
   public void dispose() {
     currentEntity = null;
-    messages.removeListener(this, TelegramEvents.SelectedEntity);
-    messages.removeListener(this, TelegramEvents.DeselectedEntity);
-    messages.removeListener(this, TelegramEvents.ScriptStart);
-    messages.removeListener(this, TelegramEvents.ScriptStop);
+    messages.removeListeners(this, TelegramEvents.OnScriptStart, TelegramEvents.OnScriptStop);
     messages = null;
   }
 
@@ -108,14 +102,16 @@ public class ProgramingController implements Disposable, Telegraph {
   public boolean handleMessage(Telegram msg) {
     Gdx.app.log(TAG, "handleMessage: " + TelegramEvents.from(msg));
     switch (TelegramEvents.from(msg)) {
-      case ScriptStop:
+      case OnScriptStop:
+        this.scriptRunning = false;
         updateButtonByEntityState();
         return true;
-      case ScriptStart:
+      case OnScriptStart:
+        this.scriptRunning = true;
         updateButtonByEntityState();
         return true;
 
-      case SelectedEntity:
+      /*case SelectedEntity:
         currentEntity = TelegramEvents.getEntity(msg.sender);
 
         String source = ""; //Components.RobotCPU.get(currentEntity).getSource();
@@ -133,19 +129,22 @@ public class ProgramingController implements Disposable, Telegraph {
         currentEntity = null;
         codeEditorWindow.setVisible(false);
         return true;
-
+*/
     }
     return false;
   }
 
+  public void show() {
+    codeEditorWindow.setVisible(true);
+    codeEditorWindow.toFront();
+    codeTextField.focus();
+  }
+
   private void updateButtonByEntityState() {
-    if (currentEntity != null) {
-      //Gdx.app.log(TAG, "updateButtonByEntityState: " + Components.RobotCPU.get(currentEntity).getState());
-      /*if (Components.RobotCPU.get(currentEntity).isRunning()) {
-        runStopButton.setStyle(stopButtonStyle);
-      } else {
-        runStopButton.setStyle(runButtonStyle);
-      }*/
+    if (scriptRunning) {
+      runStopButton.setStyle(stopButtonStyle);
+    } else {
+      runStopButton.setStyle(runButtonStyle);
     }
   }
 }

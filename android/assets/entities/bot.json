@@ -1,5 +1,7 @@
 {
   Position: {},
+  CPU: {},
+  RocketEngine: {},
   Body: {
     type: "DynamicBody",
     shape: "Box",

@@ -32,6 +32,10 @@ public class GameplayScreenGroup extends Group implements Disposable {
     addActor(consoleView);
   }
 
+  public ProgramingController getProgramingController() {
+    return programingController;
+  }
+
   @Override
   public void dispose() {
     programingController.dispose();

@@ -10,72 +10,29 @@ import de.macbury.landbot.core.entities.components.PositionComponent;
  * All events used in game!
  */
 public enum TelegramEvents {
-  ScriptStart,
-  ScriptException,
-  ScriptPause,
-  ScriptAbort,
-  ScriptStop,
-  Test,//TODO remove
-
-  SelectedEntity,
-  DeselectedEntity,
-
   /**
-   * This event is triggered when entity have collided with terrain!
+   * Inform {@link de.macbury.landbot.core.entities.components.CPUComponent} to start executing script
    */
-  CollidedWithTerrain,
+  RunScript,
+  /**
+   * Inform {@link de.macbury.landbot.core.entities.components.CPUComponent} to stop executing script
+   */
+  StopScript,
 
   /**
-   * Here are events triggered by {@link de.macbury.landbot.core.entities.states.RobotMotorState}.
-   * They can be used for starting and stoping sound/animation etc
+   * These states are triggered by {@link de.macbury.landbot.core.entities.components.CPUComponent} after script execution changes
    */
-  MotorMovementStart,
-  MotorMovementStop,
+  OnScriptStart,
+  OnScriptException,
+  OnScriptStop,
 
-  MotorTurnStart,
-  MotorTurnStop,
-
-  /**
-   * Informs ui to use diffrent cursor
-   */
-  UiShowNormalCursor,
-  UiShowTextCursor,
+  UiShowTextCursor, UiShowNormalCursor,
 
   /**
-   * Reprogram robot.
+   * This event is triggered by user and starts landing sequence
    */
-  RestartRobot,
-  /**
-   * Starts robot script, Triggered by player clicking on ui
-   */
-  StartRobot,
-  /**
-   * Stops robot script, Triggered by player clicking on ui
-   */
-  StopRobot,
-  /**
-   * Make robot turn, payload is int with degrees
-   */
-  InstructionTurn,
-  /**
-   * Make robot wait, payload is float with seconds
-   */
-  InstructionWait,
-  /**
-   * Start robot moving, payload is int with distance
-   */
-  InstructionMove,
-
-  /**
-   * Sends message from entity with payload
-   */
-  InstructionMessage;
-
-  public static TelegramEvents RobotInstructionEvents[] = {
-    InstructionMove,
-    InstructionWait,
-    InstructionTurn
-  };
+  RunLandingScript,
+  StopLandingScript;
 
   /**
    * Return true if {@link Telegram#message} equals this

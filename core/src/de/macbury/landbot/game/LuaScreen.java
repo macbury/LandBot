@@ -32,8 +32,8 @@ public class LuaScreen extends ScreenBase {
   @Override
   public void create() {
     this.fpsLogger    = new FPSLogger();
-    this.scriptRunner = new ScriptRunner(Gdx.files.internal("test.lua").readString(), new ScriptEnv());
-    scriptRunner.start();
+    //this.scriptRunner = new ScriptRunner(Gdx.files.internal("test.lua").readString(), new ScriptEnv());
+    //scriptRunner.start();
   }
 
   @Override

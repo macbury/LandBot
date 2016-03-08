@@ -55,7 +55,7 @@
 	console: { }
   },
 
-  de.macbury.expanse.core.ui.code_editor.widget.CodeEditorTextArea$CodeEditorTextAreaStyle: {
+  de.macbury.landbot.core.ui.code_editor.widget.CodeEditorTextArea$CodeEditorTextAreaStyle: {
     default: {
       font: code,
       background: text_field,

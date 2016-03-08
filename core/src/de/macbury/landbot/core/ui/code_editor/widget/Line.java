@@ -3,7 +3,7 @@ package de.macbury.landbot.core.ui.code_editor.widget;
 
 
 import com.badlogic.gdx.utils.Array;
-import de.macbury.landbot.core.ui.code_editor.js.JavaScriptScanner;
+import de.macbury.landbot.core.ui.code_editor.js.LuaScanner;
 
 public class Line extends Array<Element> {
   private String cachedFullText = "";
@@ -46,9 +46,9 @@ public class Line extends Array<Element> {
     int sum = 0;
     for (int i = 0; i < this.size; i++) {
       Element e = this.get(i);
-      if (e.kind == JavaScriptScanner.Kind.NEWLINE) {
+      if (e.kind == LuaScanner.Kind.NEWLINE) {
         continue;
-      } else if (e.kind == JavaScriptScanner.Kind.NORMAL) {
+      } else if (e.kind == LuaScanner.Kind.NORMAL) {
         sum += e.countSpaces();
       } else {
         break;

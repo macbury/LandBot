@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import de.macbury.landbot.LandBot;
 import de.macbury.landbot.core.entities.EntityManager;
+import de.macbury.landbot.core.entities.blueprint.EntityBlueprint;
 import de.macbury.landbot.core.entities.components.PositionComponent;
 import de.macbury.landbot.core.graphics.LodModelBatch;
 import de.macbury.landbot.core.graphics.camera.GameCamera;
@@ -29,6 +30,7 @@ public class WorldState implements Disposable {
   public OrthographicCamera camera;
   public World world;
   public OrthographicCamera b2dCamera;
+  public EntityBlueprint landingBotBlueprint;
 
   public WorldState(LandBot game) {
     this.camera               = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -48,6 +50,7 @@ public class WorldState implements Disposable {
 
   @Override
   public void dispose() {
+    landingBotBlueprint = null;
     Gdx.app.log(TAG, "Disposing");
     world.dispose();
     camera  = null;
