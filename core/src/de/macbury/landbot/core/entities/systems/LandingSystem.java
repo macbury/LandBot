@@ -43,13 +43,6 @@ public class LandingSystem extends EntitySystem implements Disposable, EntityLis
   }
 
   @Override
-  public void update(float deltaTime) {
-    if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
-      Components.CPU.get(landingBotEntity).getScriptRunner().resume("MY result!");
-    }
-  }
-
-  @Override
   public void entityAdded(Entity entity) {
     if (Components.LandingBotSpawn.has(entity)) {
       if (this.spawningEntity != null)
@@ -91,9 +84,12 @@ public class LandingSystem extends EntitySystem implements Disposable, EntityLis
    * @param code lua code to run
    */
   private void startLanding(String code) {
-    this.landingBotEntity = worldState.landingBotBlueprint.createAndAdd(worldState.entities, messages);
+    this.landingBotEntity = worldState.landingBotBlueprint.create(worldState.entities, messages);
     Components.CPU.get(landingBotEntity).setSource(code);
     Components.Position.get(landingBotEntity).set(Components.Position.get(spawningEntity));
+
+    worldState.entities.addEntity(landingBotEntity);
     messages.dispatchRunScript(landingBotEntity);
+    //Components.Body.get(landingBotEntity).body.applyLinearImpulse(30, 30, Components.Body.get(landingBotEntity).getPosition().x, Components.Body.get(landingBotEntity).getPosition().y, true);
   }
 }

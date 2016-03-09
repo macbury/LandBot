@@ -15,25 +15,28 @@ public class EntityManager extends PooledEngine implements Disposable, EntityLis
   private final PhysicsSystem psychicsSystem;
   private final LanderCPUSystem landerCPUSystem;
   private final LandingSystem landingSystem;
+  private final CelestialBodiesGravitySystem celestialBodiesSystem;
   private SpriteRenderingSystem spriteRenderingSystem;
 
   public EntityManager(WorldState worldState, LandBot game) {
     super();
 
+    this.celestialBodiesSystem = new CelestialBodiesGravitySystem(game, worldState);
     this.spriteRenderingSystem = new SpriteRenderingSystem(game, worldState);
     this.psychicsSystem        = new PhysicsSystem(game, worldState);
     this.landerCPUSystem       = new LanderCPUSystem(game, worldState);
     this.landingSystem         = new LandingSystem(game, worldState);
 
+    addEntityListener(this);
     addEntityListener(landingSystem);
     addEntityListener(landerCPUSystem);
-    addEntityListener(this);
     addEntityListener(psychicsSystem);
 
     addSystem(landerCPUSystem);
     addSystem(landingSystem);
     addSystem(spriteRenderingSystem);
     addSystem(psychicsSystem);
+    addSystem(celestialBodiesSystem);
   }
 
 
@@ -45,6 +48,7 @@ public class EntityManager extends PooledEngine implements Disposable, EntityLis
     landerCPUSystem.dispose();
     psychicsSystem.dispose();
     spriteRenderingSystem.dispose();
+    celestialBodiesSystem.dispose();
     spriteRenderingSystem = null;
   }
 

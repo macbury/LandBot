@@ -37,7 +37,7 @@ public class PhysicsSystem extends IteratingSystem implements Disposable, Entity
 
   @Override
   public void update(float deltaTime) {
-    world.step(1/60f, 6, 2);
+    world.step(1/60f, 10, 10);
     super.update(deltaTime);
 
     b2dCamera.update();

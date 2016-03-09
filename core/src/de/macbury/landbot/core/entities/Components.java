@@ -12,4 +12,5 @@ public class Components {
   public final static ComponentMapper<BodyComponent>   Body                           = ComponentMapper.getFor(BodyComponent.class);
   public final static ComponentMapper<CPUComponent>   CPU                             = ComponentMapper.getFor(CPUComponent.class);
   public final static ComponentMapper<LandingBotSpawnComponent>   LandingBotSpawn     = ComponentMapper.getFor(LandingBotSpawnComponent.class);
+  public final static ComponentMapper<CelestialBodyComponent>   CelestialBody         = ComponentMapper.getFor(CelestialBodyComponent.class);
 }

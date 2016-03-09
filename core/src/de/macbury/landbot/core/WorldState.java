@@ -26,8 +26,14 @@ public class WorldState implements Disposable {
    * Pixels per meter
    */
   public final static float PPM           = 5;
+  /**
+   * All entities in current world
+   */
   public EntityManager entities;
   public OrthographicCamera camera;
+  /**
+   * Psychics engine world
+   */
   public World world;
   public OrthographicCamera b2dCamera;
   public EntityBlueprint landingBotBlueprint;
@@ -35,11 +41,11 @@ public class WorldState implements Disposable {
   public WorldState(LandBot game) {
     this.camera               = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     this.b2dCamera            = new OrthographicCamera(Gdx.graphics.getWidth()/ PPM, Gdx.graphics.getHeight()/PPM);
-    this.world                = new World(new Vector2(0, -9.8f), true);
+    this.world                = new World(new Vector2(0, 0), true);
     this.entities             = new EntityManager(this, game);
     Gdx.app.log(TAG, "Initialized");
 
-    camera.zoom = b2dCamera.zoom = 6.0f;
+    camera.zoom = b2dCamera.zoom = 12.0f;
   }
 
   public void render(float delta) {

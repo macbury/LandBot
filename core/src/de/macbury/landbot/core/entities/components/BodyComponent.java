@@ -4,10 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.*;
 import de.macbury.landbot.core.assets.Assets;
 import de.macbury.landbot.core.entities.Messages;
@@ -28,19 +25,31 @@ public class BodyComponent implements Pool.Poolable, Component {
     fixtureDef = null;
   }
 
+  public float getMass() {
+    return body.getMass();
+  }
+
+  public float getRadius() {
+    return fixtureDef.shape.getRadius();
+  }
+
+  public Vector2 getPosition() {
+    return body.getPosition();
+  }
+
   public static class Blueprint extends ComponentBlueprint<BodyComponent> {
     private BodyDef.BodyType bodyType = BodyDef.BodyType.StaticBody;
     private Vector2 dimension = new Vector2(5,5);
     private float density;
     private float friction;
     private float restitution;
-    private PolygonShape shape;
-
-    private enum Shape {
-      Box
+    private Shape shape;
+    private float radius;
+    private enum BlueprintShape {
+      Box, Circle
     }
 
-    private Shape shapeType;
+    private BlueprintShape blueprintShapeType;
 
     @Override
     public void prepareDependencies(Array<AssetDescriptor> dependencies) {
@@ -69,14 +78,20 @@ public class BodyComponent implements Pool.Poolable, Component {
       density       = json.readValue("density", Float.class, source);
       friction      = json.readValue("friction", Float.class, source);
       restitution   = json.readValue("restitution", Float.class, source);
-      dimension     = json.readValue("dimension", Vector2.class, source);
-      shapeType     = json.readValue("shape", Shape.class, source);
+      blueprintShapeType = json.readValue("shape", BlueprintShape.class, source);
 
-      this.shape        = new PolygonShape();
-      if (shapeType == Shape.Box) {
-        shape.setAsBox(dimension.x, dimension.y);
+      if (blueprintShapeType == BlueprintShape.Circle) {
+        radius     = source.getFloat("radius");
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius(radius);
+        this.shape = circleShape;
+      } else if (blueprintShapeType == BlueprintShape.Box) {
+        dimension     = json.readValue("dimension", Vector2.class, source);
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.setAsBox(dimension.x, dimension.y);
+        this.shape = polygonShape;
       } else {
-        throw new GdxRuntimeException("Unsuported shape type: " +shapeType + " of " + Shape.values());
+        throw new GdxRuntimeException("Unsuported shape type: " + blueprintShapeType + " of " + BlueprintShape.values());
       }
     }
 

@@ -1,0 +1,15 @@
+{
+  Position: {},
+  Body: {
+    type: "StaticBody",
+    shape: "Circle",
+    radius: 200,
+    density: 1,
+    friction: 1.0,
+    restitution: 0
+  },
+  CelestialBody: {
+    gravitationalForce: 30,
+    gravitationalFactor: 8
+  }
+}

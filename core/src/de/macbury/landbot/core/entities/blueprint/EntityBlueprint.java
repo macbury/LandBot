@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
+import de.macbury.landbot.core.WorldState;
 import de.macbury.landbot.core.entities.EntityManager;
 import de.macbury.landbot.core.entities.Messages;
 
@@ -52,5 +53,9 @@ public class EntityBlueprint implements Disposable {
       blueprint.dispose();
     }
     componentBlueprints.clear();
+  }
+
+  public Entity createAndAdd(WorldState worldState, Messages messages) {
+    return createAndAdd(worldState.entities, messages);
   }
 }
