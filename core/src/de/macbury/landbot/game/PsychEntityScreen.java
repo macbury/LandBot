@@ -36,7 +36,7 @@ public class PsychEntityScreen extends ScreenBase {
     worldState.landingBotBlueprint = assets.get("entity:bot.json");
     EntityBlueprint spawnBlueprint = assets.get("entity:spawning_point.json");
     Entity spawnEntity             = spawnBlueprint.createAndAdd(worldState.entities, messages);
-    Components.Position.get(spawnEntity).set(-1000*WorldState.PPM, -1000*WorldState.PPM);
+    Components.Position.get(spawnEntity).set(0, -1000*WorldState.PPM);
 
     GameplayScreenGroup gameplayScreenGroup = new GameplayScreenGroup(game, worldState);
     hud.addActor(gameplayScreenGroup);
@@ -45,29 +45,6 @@ public class PsychEntityScreen extends ScreenBase {
     EntityBlueprint testPlanetBlueprint = assets.get("entity:test_planet.json");
 
     testPlanetBlueprint.createAndAdd(worldState, messages);
-    //createPlanets();
-  }
-
-  private void createPlanets() {
-    World world = worldState.world;
-
-    int planetRadiusInMeters = 230;
-
-    FixtureDef planetFixtureDef  = new FixtureDef();
-    planetFixtureDef.restitution = 0;
-    planetFixtureDef.density     = 1;
-
-    CircleShape planetShape = new CircleShape();
-    planetShape.setRadius(6f);
-
-    planetShape.setRadius(planetRadiusInMeters);
-    planetFixtureDef.shape         = planetShape;
-
-    BodyDef planetBodyDef    = new BodyDef();
-    planetBodyDef.position.set(0,0);
-
-    Body planetBody = world.createBody(planetBodyDef);
-    planetBody.createFixture(planetFixtureDef);
   }
 
   @Override

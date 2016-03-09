@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
@@ -21,6 +22,8 @@ import de.macbury.landbot.core.entities.components.PositionComponent;
  */
 //http://mentalgrain.com/box2d/simulating-multiple-sources-of-gravity-in-box2d/
 public class CelestialBodiesGravitySystem extends IteratingSystem implements Disposable {
+  private static final float GRAVITY_LEN_MULTIPLICATOR = 4f;
+  private static final String TAG = "CelestialBodiesGravitySystem";
   private WorldState worldState;
   private ImmutableArray<Entity> celestialBodiesEntities;
   private final Vector2 tempBodyDistance = new Vector2();
@@ -43,7 +46,7 @@ public class CelestialBodiesGravitySystem extends IteratingSystem implements Dis
 
   @Override
   public void update(float deltaTime) {
-    //worldState.world.clearForces();
+    worldState.world.clearForces();
     super.update(deltaTime);
   }
 
@@ -66,9 +69,9 @@ public class CelestialBodiesGravitySystem extends IteratingSystem implements Dis
         // Calculate the magnitude of the force to apply to the debris.
         // This is proportional to the distance between the planet and
         // the debris. The force is weaker the further away the debris.
-        //https://github.com/Fahien/spacefloat/blob/9bea9f477df65b1cf6d717edd802fc2dea13c68a/core/src/me/fahien/spacefloat/system/BulletSystem.java
+        // https://github.com/Fahien/spacefloat/blob/9bea9f477df65b1cf6d717edd802fc2dea13c68a/core/src/me/fahien/spacefloat/system/BulletSystem.java#L564
         float len = tempBodyDistance.len();
-        force = (celestialBodyComponent.getGravitationalForce() * debrisBodyComponent.getMass()) / (len * 4f);
+        force = (celestialBodyComponent.getGravitationalForce() * debrisBodyComponent.getMass()) / (len * GRAVITY_LEN_MULTIPLICATOR);
 
         if (len < celestialBodyRadius * celestialBodyComponent.getGravitationalFactor()) {
           // Change the direction of the vector so that the force will be
@@ -76,6 +79,8 @@ public class CelestialBodiesGravitySystem extends IteratingSystem implements Dis
           tempBodyDistance.scl(-force);
           debrisBodyComponent.body.applyForceToCenter(tempBodyDistance, true);
         }
+
+        //Gdx.app.log(TAG, "Speed: " + Components.Body.get(entity).body.getLinearVelocity().len() + " m/s");
       }
     }
   }
